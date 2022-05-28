@@ -1,1 +1,3 @@
-export interface IUsersService {}
+export interface IUsersService {
+  getUserByEmail(email: string);
+}
