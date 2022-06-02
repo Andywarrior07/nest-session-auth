@@ -2,8 +2,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Exclude, Transform } from 'class-transformer';
 
+export type UserDocument = User & Document;
 @Schema()
-export class User extends Document {
+export class User {
   @Transform(({ value }) => value.toString())
   _id: string;
 
@@ -13,8 +14,11 @@ export class User extends Document {
   @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ type: String, reuqired: true })
+  @Prop({ type: String, required: true })
   lastName: string;
+
+  @Prop({ type: String })
+  salt: string;
 
   @Prop({ type: String, required: true })
   @Exclude()

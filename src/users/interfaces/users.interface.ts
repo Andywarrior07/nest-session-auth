@@ -1,3 +1,6 @@
+import { User } from '../schemas/user.schema';
+
 export interface IUsersService {
-  getUserByEmail(email: string);
+  getUsers(): Promise<User[]>;
+  getUserById(id: string): Promise<User>;
 }
