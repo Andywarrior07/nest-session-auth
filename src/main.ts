@@ -7,6 +7,8 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 import { AppModule } from './app.module';
 
+const ONE_WEEK_SECONDS = 604800;
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -19,13 +21,20 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const RedisStore = createRedisStore(session);
   const redisClient = createClient({
-    host: configService.get('REDIS_HOST'),
-    port: configService.get('REDIS_PORT'),
+    url: 'redis://localhost:6379',
+    legacyMode: true,
   });
+
+  redisClient.connect().catch(console.error);
+
+  const redisStopreOptions: any = {
+    client: redisClient,
+    ttl: ONE_WEEK_SECONDS,
+  };
 
   app.use(
     session({
-      store: new RedisStore({ client: redisClient }),
+      store: new RedisStore(redisStopreOptions),
       secret: configService.get('SECRET_KEY'),
       resave: false,
       saveUninitialized: false,
